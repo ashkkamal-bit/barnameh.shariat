@@ -1,0 +1,6 @@
+{
+  "name": "برنامه ریز شریعت",
+  "description": "RTL-first Persian intelligent daily planner with Jalali calendar, voice task synthesis, and nocturnal Material 3 UI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

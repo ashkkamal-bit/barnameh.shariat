@@ -1,0 +1,1242 @@
+# MASTER SUPER PROMPT — NOCTURNE 2.0
+## Advanced AI-Powered Personal Planner, Voice Assistant, Android Widgets & Smart Notifications
+
+Act as a senior Android software architect, Kotlin developer, Jetpack Compose expert, AI engineer, database architect, UI/UX designer, and Android application security specialist.
+
+Your task is to fully inspect, repair, refactor, and upgrade my EXISTING Android application named **Nocturne** into a stable, production-quality application named **Nocturne 2.0**.
+
+This is an existing project. You must improve the existing source code, not replace it with an unrelated application or create a superficial prototype.
+
+The final result must be a fully functional native Android application with a real AI assistant, Persian voice recognition, intelligent scheduling, interactive home screen widgets, reliable notifications, alarms, calendar management, and personal productivity tools.
+
+---
+
+# 1. MOST IMPORTANT DEVELOPMENT RULES
+
+Follow these rules throughout development:
+
+1. Inspect the entire existing project before modifying any files.
+2. Understand the existing architecture, dependencies, database, UI components, repositories, ViewModels, and navigation.
+3. Preserve all existing useful functionality and visual identity.
+4. Do not delete or overwrite existing user data.
+5. Do not replace functional components with mockups or placeholder screens.
+6. Do not create fake AI functionality and label it as real AI.
+7. Do not use hardcoded sample data as actual user data.
+8. Do not silently invent dates, times, task durations, or user decisions.
+9. Maintain backward compatibility with existing database records.
+10. Add automated tests for all important business logic.
+11. Use stable, compatible Android libraries and check their current official documentation before selecting versions.
+12. Update Gradle dependencies and version catalogs correctly.
+13. Implement actual Android functionality, not merely visual representations.
+14. Do not stop after producing an architecture plan. Make the actual source-code modifications.
+15. Do not leave TODOs, fake implementations, or incomplete methods in essential features.
+16. Do not claim that a feature works unless its implementation and tests support that claim.
+17. If an external service requires configuration, implement the integration correctly and provide an accurate setup guide.
+18. If an implementation cannot be completed due to missing credentials, unavailable services, or environment limitations, clearly document the blocker and do not simulate success.
+19. Keep the project buildable throughout development.
+20. Do not remove essential dependencies, permissions, or project configurations without a technical reason.
+
+Before beginning, create a backup of the original source code or preserve the original files in version control.
+
+---
+
+# 2. EXISTING PROJECT INFORMATION
+
+The existing project is an Android application using:
+
+- Kotlin
+- Jetpack Compose
+- Material 3
+- Room Database
+- Kotlin Coroutines
+- StateFlow
+- DataStore
+- PersianCalendarUtil
+- PersianScheduleParser
+- Android SpeechRecognizer
+- Existing dark visual design
+- Vazirmatn Persian font
+
+The existing project includes these important files:
+
+- app/src/main/java/com/example/MainActivity.kt
+- app/src/main/java/com/example/data/ai/AiRepository.kt
+- app/src/main/java/com/example/data/local/TaskEntity.kt
+- app/src/main/java/com/example/data/repository/TaskRepository.kt
+- app/src/main/java/com/example/data/model/TaskModels.kt
+- app/src/main/java/com/example/ui/NocturneViewModel.kt
+- app/src/main/java/com/example/ui/components/VoiceAssistantSheet.kt
+- app/src/main/java/com/example/ui/components/DailyTimelineView.kt
+- app/src/main/java/com/example/ui/components/TaskEditorSheet.kt
+- app/src/main/java/com/example/ui/screens/TodayScreen.kt
+- app/src/main/java/com/example/ui/screens/CalendarScreen.kt
+- app/src/main/java/com/example/ui/screens/InsightsScreen.kt
+- app/src/main/java/com/example/ui/screens/SettingsScreen.kt
+- app/src/main/java/com/example/util/PersianCalendarUtil.kt
+- app/src/main/java/com/example/util/PersianScheduleParser.kt
+
+The existing application package and project configuration must be inspected and preserved unless changing them is genuinely necessary.
+
+The final application must remain compatible with Android phones, including Android 7.0 and newer wherever the selected libraries and features permit.
+
+---
+
+# 3. FIX EXISTING BUGS BEFORE ADDING FEATURES
+
+These are known defects that must be investigated and corrected.
+
+## 3.1. Fix Persian speech recognition
+
+Inspect AndroidManifest.xml and the existing SpeechRecognizer implementation.
+
+Required actions:
+
+- Add the required package visibility queries for RecognitionService on Android 11 and newer.
+- Properly request RECORD_AUDIO at runtime.
+- Handle permission denial.
+- Verify SpeechRecognizer availability.
+- Configure Persian recognition with fa-IR.
+- Handle recognition errors gracefully.
+- Handle empty transcription.
+- Handle partial results.
+- Properly stop, cancel, and destroy SpeechRecognizer.
+- Prevent memory leaks and duplicate listening sessions.
+- Provide text input whenever speech recognition is unavailable.
+- Display meaningful Persian error messages.
+
+Never start microphone recording secretly or automatically in the background.
+
+The optional automatic-listening setting must actually work when the user explicitly taps the microphone button and has granted microphone permission.
+
+## 3.2. Rewrite PersianScheduleParser
+
+Fix and thoroughly test the Persian schedule parser.
+
+It must correctly understand:
+
+- Persian digits.
+- Arabic digits.
+- English digits.
+- Persian number words.
+- Common conversational Persian expressions.
+- Persian date expressions.
+- Persian time expressions.
+- Morning, afternoon, evening, and midnight indicators.
+
+Correctly support these examples:
+
+| Persian command | Expected time |
+|---|---|
+| ساعت ۷ صبح | 07:00 |
+| ساعت ۷ عصر | 19:00 |
+| ساعت ۷:۳۰ عصر | 19:30 |
+| ساعت ۱۲ ظهر | 12:00 |
+| ساعت ۱۲ شب | 00:00 |
+| ساعت ۱۲:۳۰ شب | 00:30 |
+| ساعت ۱۲:۳۰ ظهر | 12:30 |
+| ساعت ۱۸:۴۵ | 18:45 |
+| ساعت ۹ و نیم صبح | 09:30 |
+| نیم ساعت دیگر | 30 minutes from now |
+| یک ربع دیگر | 15 minutes from now |
+
+Also understand expressions such as:
+
+- فردا
+- پس‌فردا
+- امروز
+- آخر هفته
+- هفته آینده
+- شنبه آینده
+- سه‌شنبه ساعت ۱۰
+- ده دقیقه قبل از جلسه
+- یک ربع به ۹
+- نیم ساعت بعد از ظهر
+
+Important corrections:
+
+- Never convert 7 PM into 7 AM.
+- Never convert midnight into noon.
+- Never remove meaningful parts of task titles.
+- Do not remove the standalone Persian word «کار» when cleaning task titles.
+- Use token-aware text normalization rather than dangerous substring replacement.
+- Do not silently assign 16:00 or any arbitrary time if the user has not specified a time.
+- Represent an activity without an explicitly assigned time as an unscheduled task.
+- Ask for clarification when a time expression is genuinely ambiguous.
+
+Use deterministic Kotlin logic for time validation and Persian date conversion. AI may interpret natural language, but it must not bypass these validations.
+
+## 3.3. Fix sample data deletion and restoration
+
+Inspect TaskRepository.ensureSeeded() and resetSampleData().
+
+The current implementation can restore sample activities whenever the database becomes empty.
+
+This behavior must be corrected.
+
+Requirements:
+
+- Empty database must remain empty unless the user explicitly requests sample data.
+- Existing user tasks must never be replaced with sample tasks automatically.
+- Reset operations must require explicit confirmation.
+- Provide separate options for clearing user tasks and restoring demo data.
+- Back up user data before destructive operations.
+- Perform related database operations transactionally.
+- Display a clear warning before deleting information.
+- Do not display a success message before the operation has completed successfully.
+
+## 3.4. Fix database consistency
+
+Inspect the current Room entities, DAO methods, repository, and migrations.
+
+Requirements:
+
+- Eliminate stale-object updates when toggling task completion.
+- Prefer atomic DAO updates based on task IDs and current database values.
+- Prevent rapid user interactions from silently overwriting more recent task changes.
+- Correctly update subtasks.
+- Preserve user information during migrations.
+- Never use destructive database migration in production.
+- Add migration tests.
+
+## 3.5. Fix date and timeline updates
+
+- The displayed Persian date must update when the real calendar date changes.
+- The current-time indicator must not remain frozen.
+- The daily timeline must refresh when necessary while the application is active.
+- Recalculate time-based information after timezone or system-clock changes.
+- Avoid unnecessary background refreshes that consume battery.
+
+## 3.6. Fix incomplete settings
+
+Every existing setting must have a real functional effect.
+
+In particular:
+
+- Auto Listen on Voice Tap.
+- Haptic Feedback.
+- Default Activity Duration.
+
+The default duration must be applied to newly created tasks when no explicit duration is provided.
+
+If the user has not specified a start time, the duration setting must not invent one.
+
+---
+
+# 4. REAL GEMINI AI INTEGRATION
+
+Replace PlaceholderAiRepository with a real AI implementation.
+
+Use Firebase AI Logic and its current supported Android Kotlin SDK when appropriate.
+
+Do not expose a private Gemini API key inside the APK or hardcode secrets in source code.
+
+Implement appropriate Firebase configuration and App Check protection.
+
+If Firebase is not configured yet:
+
+- Keep the project buildable.
+- Implement a proper OfflineAiRepository.
+- Display a clear Persian message that cloud AI is not configured.
+- Do not pretend the offline parser is Gemini.
+- Provide an exact Firebase setup guide.
+- Make switching between offline and online AI clean and maintainable.
+
+Create a clean abstraction such as:
+
+- AiRepository
+- GeminiAiRepository
+- OfflineAiRepository
+- AiResponseValidator
+
+## 4.1. AI capabilities
+
+The assistant must understand natural Persian commands and be able to:
+
+- Create tasks.
+- Edit existing tasks.
+- Reschedule tasks.
+- Split complex requests into separate tasks.
+- Suggest task durations.
+- Suggest suitable time blocks.
+- Recognize task priorities.
+- Recognize task categories.
+- Identify possible scheduling conflicts.
+- Suggest moving nonurgent tasks.
+- Summarize the user's daily schedule.
+- Generate weekly planning suggestions.
+- Identify overdue tasks.
+- Help the user achieve personal goals.
+
+## 4.2. Structured AI output
+
+Do not rely on free-form AI responses for database writes.
+
+Use structured JSON output with a schema comparable to:
+
+{
+  "tasks": [
+    {
+      "title": "Meeting",
+      "date": "2026-11-18",
+      "time": "10:00",
+      "durationMinutes": 60,
+      "priority": "HIGH",
+      "category": "WORK",
+      "description": "",
+      "subtasks": [],
+      "reminderOffsetsMinutes": [10]
+    }
+  ],
+  "requiresClarification": false,
+  "clarificationQuestion": null,
+  "conflicts": [],
+  "recommendations": []
+}
+
+The schema is illustrative. Implement the actual validated data model in Kotlin.
+
+Requirements:
+
+- Use ISO Gregorian dates internally for structured AI interchange.
+- Convert to and from the existing Jalali date model using tested Kotlin utilities.
+- Validate dates, times, durations, priorities, and categories.
+- Reject invalid AI output safely.
+- Support multiple independent tasks.
+- Preserve the original user request.
+- Never save an AI-generated task without displaying a review and confirmation screen.
+- Clearly distinguish explicit user input from AI suggestions and inferred values.
+- Never move or delete an existing task automatically without user confirmation.
+
+If a command has no specified time, preserve it as unscheduled.
+
+If the user has not specified a duration, use the user's configured default duration and identify it as a suggested/default value in the preview.
+
+## 4.3. Conversational assistant
+
+Implement a conversational assistant that remembers the context of the current planning session.
+
+Examples:
+
+User: «فردا ساعت ۸ باید برم اداره.»
+
+Assistant: «برنامه حضور در اداره برای فردا ساعت ۸ ثبت شود؟»
+
+User: «بله، یک ساعت طول می‌کشه.»
+
+Assistant: «مدت فعالیت را یک ساعت تنظیم کردم. ثبت کنم؟»
+
+User: «نه، ساعت ۹ باشه.»
+
+Assistant: «زمان فعالیت به ساعت ۹ تغییر می‌کند. تأیید می‌کنید؟»
+
+The assistant must understand corrections and references to previously discussed tasks within the current conversation.
+
+Do not send user data to external services unnecessarily.
+
+---
+
+# 5. ADVANCED VOICE ASSISTANT
+
+Create a real two-way Persian voice assistant.
+
+The assistant must support:
+
+### Voice input
+
+- Persian speech recognition.
+- Text transcription.
+- Partial transcription display.
+- Retry after recognition errors.
+- Manual text input fallback.
+- Clear listening and processing states.
+
+### Voice output
+
+Use Android TextToSpeech with Persian language support.
+
+Requirements:
+
+- Check whether Persian voices are available.
+- Allow the user to select spoken responses.
+- Provide adjustable speech rate and volume where supported.
+- Gracefully handle unavailable voice packages.
+- Provide text responses when speech synthesis is unavailable.
+- Do not play unsolicited voice responses without user preference.
+
+### Voice commands
+
+Support commands such as:
+
+- «برنامه امروزمو بگو.»
+- «فردا چه کارهایی دارم؟»
+- «جلسه فردا رو حذف نکن، فقط جابه‌جاش کن.»
+- «کار بعدی من چیه؟»
+- «این کار انجام شد.»
+- «برنامه‌های عقب‌افتاده رو نشون بده.»
+- «برای فردا برنامه‌ریزی کن.»
+- «ساعت ۱۰ یادآوری کن.»
+- «برنامه‌هامو خلاصه کن.»
+
+The assistant must distinguish between viewing information, creating tasks, changing tasks, and destructive actions.
+
+Always require confirmation before destructive or consequential changes.
+
+---
+
+# 6. NATIVE ANDROID HOME SCREEN WIDGETS
+
+This is a mandatory core feature.
+
+Implement actual Android Home Screen widgets using Kotlin and Jetpack Glance.
+
+Do not create a widget-like screen inside the application and claim that it is an Android widget.
+
+The widget must be available in the Android launcher's widget selection list after installation.
+
+Create one responsive widget provider that supports three practical layout sizes, with configuration options where useful.
+
+## 6.1. Small widget
+
+Designed for a compact home screen area.
+
+Display:
+
+- Nocturne identity.
+- Current time.
+- Persian/Jalali date.
+- Next scheduled activity.
+- Remaining time until the next activity.
+- Quick app launch.
+
+## 6.2. Medium widget
+
+Display:
+
+- Today's schedule.
+- Next three scheduled activities.
+- Task start times.
+- Completion indicators.
+- Daily progress percentage.
+- Next reminder.
+- Quick Add Task action.
+- Voice Assistant shortcut.
+
+This should be the default recommended layout.
+
+## 6.3. Large widget
+
+Display:
+
+- Full daily agenda.
+- Pending activities.
+- Completed activities.
+- Overdue tasks.
+- Task priorities.
+- Daily progress.
+- Next upcoming activity.
+- Quick task creation.
+- Assistant shortcut.
+
+## 6.4. Real widget interactions
+
+All displayed information must come from the existing Room database.
+
+Implement:
+
+- Mark task as completed.
+- View task details.
+- Open task editor.
+- Add new task.
+- Open the main application.
+- Open the voice assistant interface.
+
+Widget interactions must update the same underlying Room records used by the main application.
+
+Do not duplicate task storage.
+
+Use proper Glance ActionCallbacks and database operations.
+
+After every successful widget action, update all relevant widget instances.
+
+## 6.5. Widget synchronization
+
+Widgets must refresh when:
+
+- A task is created.
+- A task is edited.
+- A task is deleted.
+- A task is marked completed.
+- A task is rescheduled.
+- The selected date changes.
+- The application settings affecting the widget change.
+
+Support multiple widget instances.
+
+Respect widget sizing and different launcher implementations.
+
+Use Glance state only for per-widget preferences, not as a replacement for the Room task database.
+
+Use WorkManager only for appropriate deferrable refresh operations.
+
+Do not refresh every minute unnecessarily.
+
+Avoid excessive background activity and battery consumption.
+
+## 6.6. Widget settings
+
+Allow the user to configure:
+
+- Small, medium, and large display layouts through resizing.
+- Number of visible tasks.
+- Whether completed tasks are shown.
+- Whether task descriptions are displayed.
+- Whether priority labels are displayed.
+- Dark or light appearance where supported.
+- Whether private task titles should be hidden.
+
+Add a clean empty-state design when no activities exist.
+
+---
+
+# 7. COMPLETE SMART NOTIFICATION SYSTEM
+
+Implement a real Android notification and reminder engine.
+
+Use:
+
+- AlarmManager for appropriate user-requested time-based alarms.
+- WorkManager for deferrable background operations.
+- BroadcastReceivers for alarm delivery and relevant system events.
+- NotificationCompat for compatibility.
+
+Never use a continuously running service just to check the time.
+
+## 7.1. Notification types
+
+Implement these notification categories:
+
+1. Reminder before a scheduled activity.
+2. Notification at activity start time.
+3. Overdue activity alert.
+4. Morning daily schedule summary.
+5. Evening daily performance summary.
+6. Goal reminders.
+7. Habit reminders.
+8. Optional recurring activity reminders.
+
+## 7.2. Configurable reminder times
+
+Allow the user to select:
+
+- At the scheduled time.
+- 5 minutes before.
+- 10 minutes before.
+- 15 minutes before.
+- 30 minutes before.
+- Custom reminder time.
+
+Also support multiple reminders for a single important task.
+
+The user must be able to disable reminders independently for every task.
+
+## 7.3. Interactive notifications
+
+A task notification should provide actions such as:
+
+- Mark as completed.
+- Snooze for 5 minutes.
+- Snooze for 10 minutes.
+- Snooze for 15 minutes.
+- Open task details.
+
+These actions must perform actual database operations.
+
+Use unique and stable PendingIntent identifiers to prevent notifications from replacing unrelated reminders.
+
+## 7.4. Notification channels
+
+Create separate Android notification channels for:
+
+- Task reminders.
+- Important activities.
+- Daily summaries.
+- Habit reminders.
+
+Allow users to configure each channel through Android system settings.
+
+Implement Persian titles and descriptions.
+
+## 7.5. Scheduling reliability
+
+Implement:
+
+- Unique alarm scheduling per task and reminder.
+- Alarm cancellation when tasks are completed.
+- Alarm replacement when tasks are edited.
+- Alarm cancellation when tasks are deleted.
+- Duplicate notification prevention.
+- Device reboot recovery.
+- Timezone-change recovery.
+- Date/time-change recovery.
+- Exact alarm permission state monitoring.
+- Notification permission state monitoring.
+
+On Android 13 and newer, request POST_NOTIFICATIONS properly.
+
+On Android versions requiring special exact alarm access, check the actual permission state before attempting to schedule exact alarms.
+
+Prefer SCHEDULE_EXACT_ALARM with an explained user permission flow when an exact reminder is needed and appropriate.
+
+Do not request USE_EXACT_ALARM automatically without verifying that the app's core use case and applicable distribution policy qualify.
+
+Use an inexact fallback if exact alarm permission is unavailable, and clearly explain that timing may be delayed.
+
+Use full-screen notifications only if a genuine alarm-clock use case and applicable platform requirements justify them. Ordinary task reminders should use normal notifications.
+
+## 7.6. Xiaomi and other device compatibility
+
+Add a Persian troubleshooting page for notification reliability on devices that use manufacturer battery restrictions.
+
+Include general guidance for Xiaomi and HyperOS/MIUI users:
+
+- Notification permission.
+- Battery optimization settings.
+- Background activity settings where available.
+- Autostart settings where available.
+- Exact alarm permission when applicable.
+
+Do not claim that the application can bypass Android or manufacturer restrictions.
+
+Clearly explain that force-stop and some OEM restrictions can prevent scheduled notifications until the user reopens or re-enables the application.
+
+---
+
+# 8. ADVANCED CALENDAR AND SCHEDULING
+
+Improve the existing calendar and daily planner.
+
+Implement:
+
+### Daily view
+- Complete daily agenda.
+- Timeline visualization.
+- Current-time indicator.
+- Completed and incomplete tasks.
+- Overdue tasks.
+- Task conflict warnings.
+
+### Weekly view
+- Seven-day schedule.
+- Time distribution.
+- Workload visualization.
+- Quick rescheduling.
+
+### Monthly view
+- Persian/Jalali calendar.
+- Daily activity indicators.
+- Completion statistics.
+- Navigation between months.
+
+## 8.1. Conflict detection
+
+Detect overlapping scheduled tasks.
+
+Example:
+
+Task A: 10:00–11:00
+
+Task B: 10:30–11:30
+
+Display a warning explaining the overlap.
+
+Offer options:
+
+- Keep both and accept the conflict.
+- Move the second task.
+- Choose a suggested available time.
+- Edit manually.
+
+Never silently move tasks.
+
+## 8.2. Task editing
+
+Allow:
+
+- Title editing.
+- Description editing.
+- Date changes.
+- Time changes.
+- Duration changes.
+- Priority changes.
+- Category changes.
+- Reminder changes.
+- Completion status changes.
+- Recurrence changes.
+
+For recurring tasks, ask whether the user wants to change:
+
+- Only this occurrence.
+- This and future occurrences.
+- The entire recurring series.
+
+Implement recurring tasks using a proper recurrence model and exceptions instead of generating an uncontrolled number of duplicate records.
+
+---
+
+# 9. PERSONAL GOALS AND HABIT TRACKING
+
+Add an optional Personal Goals module.
+
+Allow users to create goals such as:
+
+- Learn English.
+- Learn artificial intelligence.
+- Exercise regularly.
+- Read every day.
+- Improve professional skills.
+- Complete personal projects.
+
+Features:
+
+- Daily, weekly, monthly, and yearly goals.
+- Goal progress.
+- Habit streaks.
+- Completion history.
+- Reminder settings.
+- Weekly progress report.
+- AI-generated suggestions.
+
+Do not force users to configure goals to use the basic planner.
+
+Keep the primary application focused on task management and time planning.
+
+---
+
+# 10. DAILY AND WEEKLY AI INSIGHTS
+
+Replace sample insights with real analysis of saved user data.
+
+The AI must analyze:
+
+- Total scheduled activities.
+- Completed activities.
+- Incomplete activities.
+- Overdue activities.
+- Total estimated workload.
+- Time distribution.
+- High-priority tasks.
+- Scheduling conflicts.
+- Repeated habits and goals.
+
+Generate:
+
+- Morning daily plan.
+- End-of-day summary.
+- Weekly performance review.
+- Suggestions for tomorrow.
+- Suggestions for workload balance.
+- Personalized productivity recommendations.
+
+Clearly distinguish measured statistics from AI-generated suggestions.
+
+Never invent completion percentages or task counts.
+
+If cloud AI is unavailable, display reliable locally calculated statistics and label AI recommendations as unavailable.
+
+---
+
+# 11. DATA STORAGE AND BACKUP
+
+Preserve Room as the source of truth for all tasks.
+
+Use DataStore for application preferences.
+
+Add a robust backup and restore system.
+
+Requirements:
+
+- Export user tasks and preferences in a documented JSON format.
+- Support backup through Android Storage Access Framework.
+- Restore a backup after validation.
+- Detect invalid or duplicate records.
+- Use transactions for restoration.
+- Preserve Persian/Jalali dates.
+- Preserve recurrence data and reminder preferences.
+- Never silently overwrite existing information.
+- Provide a confirmation screen before replacing data.
+- Do not request broad storage permissions unnecessarily.
+
+Database migration must be non-destructive.
+
+Existing tasks must remain readable after upgrading the application.
+
+Consider adding fields for:
+
+- Nullable scheduled time.
+- Reminder configuration.
+- Recurrence metadata.
+- Timezone information where required.
+- Task creation/update timestamps.
+- AI-generated metadata.
+
+Inspect the existing schema before making these changes and write the correct Room migrations.
+
+---
+
+# 12. UI/UX DESIGN — NOCTURNE IDENTITY
+
+Preserve and improve the current visual identity.
+
+Design direction:
+
+- Premium dark productivity interface.
+- Elegant and minimal.
+- Professional.
+- Modern.
+- Calm and focused.
+- High readability.
+- No unnecessary decorative elements.
+
+Visual guidelines:
+
+- Use Vazirmatn as the main Persian font.
+- Full RTL support.
+- Persian/Jalali date formatting.
+- Persian number formatting by default.
+- Carefully designed cards.
+- Rounded corners.
+- Clear visual hierarchy.
+- Accessible contrast.
+- Consistent spacing.
+- Subtle animations.
+- Smooth transitions.
+
+Primary color direction:
+
+- Deep slate.
+- Dark navy.
+- Electric violet.
+- Luminous cyan.
+- Soft emerald for completed tasks.
+- Subtle coral for urgent activities.
+
+Support dark and light themes.
+
+Add a dedicated settings page for:
+
+- General preferences.
+- Voice settings.
+- AI settings.
+- Notification settings.
+- Widget settings.
+- Backup and restore.
+- Data privacy.
+- About Nocturne.
+
+All user-facing text must be natural Persian.
+
+Do not leave English placeholder labels in the UI.
+
+---
+
+# 13. PREFERENCES AND USER CONTROL
+
+Create a complete preferences model.
+
+Include:
+
+- Haptic feedback.
+- Speech recognition language.
+- Voice response enabled/disabled.
+- Voice response speed.
+- Auto Listen on Voice Tap.
+- Default task duration.
+- Default reminder offset.
+- Notification categories.
+- Dark/light theme.
+- Persian/English numeral display preference.
+- Widget privacy settings.
+- Daily summary settings.
+- Timezone handling.
+
+Every preference must actually affect application behavior.
+
+Avoid decorative or non-functional settings.
+
+---
+
+# 14. SECURITY AND PRIVACY
+
+Implement security by design.
+
+Requirements:
+
+- Never hardcode private API keys.
+- Never expose secrets in the APK.
+- Use Firebase AI Logic and appropriate App Check configuration for AI access.
+- Validate all AI responses.
+- Do not log private user tasks unnecessarily.
+- Minimize external transmission of personal information.
+- Ask for required permissions only when the relevant feature is used.
+- Explain microphone access.
+- Respect notification controls.
+- Avoid background microphone recording.
+- Use Android's secure storage mechanisms where necessary.
+- Keep personal planning information local by default.
+- Make cloud AI usage transparent to the user.
+
+Do not introduce unnecessary account registration or cloud synchronization.
+
+---
+
+# 15. ANDROID COMPATIBILITY AND MANIFEST
+
+Inspect and update:
+
+- AndroidManifest.xml
+- build.gradle.kts
+- libs.versions.toml
+- settings.gradle.kts
+- Gradle configuration
+- ProGuard rules
+- Receiver declarations
+- Widget metadata XML
+- Notification resources
+
+Add only the permissions and components actually required.
+
+Potential requirements include:
+
+- RECORD_AUDIO
+- POST_NOTIFICATIONS
+- RECEIVE_BOOT_COMPLETED
+- SCHEDULE_EXACT_ALARM when appropriate
+- Speech Recognition Service package visibility
+- Glance widget receivers
+- Alarm broadcast receivers
+- Relevant boot and system-change receivers
+
+Check exported status and intent filters carefully.
+
+Use immutable PendingIntents unless mutability is genuinely required.
+
+Do not accidentally expose internal receivers or activities.
+
+Keep Android 7.0+ compatibility where technically supported.
+
+---
+
+# 16. CODE ARCHITECTURE
+
+Maintain clean separation of concerns.
+
+Recommended organization:
+
+Presentation:
+- Compose screens.
+- ViewModels.
+- UI state.
+- Widget presentation.
+
+Domain:
+- Task management.
+- Scheduling rules.
+- Time parsing.
+- Conflict detection.
+- Reminder policies.
+- AI response validation.
+
+Data:
+- Room database.
+- DAOs.
+- Repositories.
+- DataStore.
+- Backup and restore.
+
+AI:
+- AiRepository.
+- GeminiAiRepository.
+- OfflineAiRepository.
+- AiResponseValidator.
+
+Notifications:
+- AlarmScheduler.
+- AlarmReceiver.
+- NotificationManager.
+- NotificationActionReceiver.
+- BootReceiver.
+- ReminderReconciliationManager.
+
+Widgets:
+- NocturneAppWidget.
+- NocturneWidgetReceiver.
+- WidgetActionCallbacks.
+- WidgetDataProvider.
+- WidgetConfigurationActivity if required.
+
+Voice:
+- SpeechRecognitionManager.
+- TextToSpeechManager.
+- VoiceCommandProcessor.
+
+Keep business logic testable and independent from Android UI components wherever possible.
+
+Avoid giant classes and excessive code duplication.
+
+Use dependency injection or a clean, maintainable dependency construction strategy appropriate to the existing project.
+
+---
+
+# 17. AUTOMATED TESTING
+
+Create meaningful tests, not only example tests.
+
+## Persian date and time parser tests
+
+Test:
+
+- Persian digits.
+- Arabic digits.
+- English digits.
+- 12 AM.
+- 12 PM.
+- Midnight.
+- Morning.
+- Afternoon.
+- Evening.
+- Minutes.
+- Relative dates.
+- Weekdays.
+- Ambiguous time expressions.
+- Expressions without any time.
+- Task-title preservation.
+- The standalone word «کار».
+- Date conversion.
+
+## Database tests
+
+Test:
+
+- Insert.
+- Read.
+- Update.
+- Delete.
+- Task completion.
+- Subtask completion.
+- Data migration.
+- Empty database behavior.
+- Sample data import.
+- Backup and restore.
+
+## Notification tests
+
+Test:
+
+- Scheduling.
+- Rescheduling.
+- Cancellation.
+- Duplicate prevention.
+- Snoozing.
+- Marking completed through notification.
+- Permission denial.
+- Exact alarm access denial.
+- Reboot recovery.
+- Timezone changes.
+
+## Widget tests
+
+Test:
+
+- All supported sizes.
+- Data loading.
+- Empty-state rendering.
+- Task completion.
+- Task creation shortcut.
+- Multiple widget instances.
+- Database synchronization.
+- Update after task editing.
+
+## AI tests
+
+Test:
+
+- Structured JSON validation.
+- Multiple task generation.
+- Ambiguous commands.
+- Missing time.
+- Invalid dates.
+- Invalid durations.
+- Conflicting tasks.
+- Failed network requests.
+- Offline fallback.
+- User confirmation before saving.
+
+---
+
+# 18. BUILD AND RELEASE REQUIREMENTS
+
+Inspect the existing Gradle wrapper and Android build configuration.
+
+Correct missing or invalid build infrastructure.
+
+If the Gradle wrapper is incomplete, generate the standard Gradle Wrapper files using the proper Gradle wrapper task whenever the environment permits. Do not fabricate binary wrapper files.
+
+Preserve valid existing application identifiers and signing configurations.
+
+Do not include private signing credentials in source code.
+
+Ensure debug builds can run without release signing credentials.
+
+Make Firebase optional for local offline builds.
+
+Run the following checks where the environment supports them:
+
+1. Gradle sync.
+2. Kotlin compilation.
+3. Unit tests.
+4. Android lint.
+5. Debug APK build.
+6. Dependency compatibility verification.
+
+Expected commands:
+
+./gradlew test
+./gradlew lint
+./gradlew assembleDebug
+
+If the environment supports Android SDK and Gradle execution, fix all discovered compilation and test errors and produce the APK.
+
+If it does not, explain exactly which verification steps could not run.
+
+Do not report a successful build without a verified successful build result.
+
+---
+
+# 19. DEVELOPMENT ORDER
+
+Implement the project in this order:
+
+PHASE 1 — Existing Project Stabilization
+- Complete project inspection.
+- Fix speech recognition.
+- Fix Persian time parser.
+- Fix Persian date handling.
+- Fix sample data deletion.
+- Fix database consistency.
+- Fix dynamic timeline behavior.
+- Repair Gradle/build issues.
+
+PHASE 2 — Notification Engine
+- Notification channels.
+- Alarm scheduling.
+- Exact alarm permission handling.
+- Snooze and completion actions.
+- Reboot recovery.
+- Timezone recovery.
+- Settings interface.
+
+PHASE 3 — Android Home Screen Widgets
+- Jetpack Glance dependencies.
+- Widget receiver.
+- Widget metadata.
+- Small, medium, and large layouts.
+- Real database integration.
+- Interactive actions.
+- Synchronization.
+
+PHASE 4 — Real Gemini AI
+- Firebase AI Logic configuration.
+- Gemini repository.
+- Structured output.
+- Validation.
+- Conversational context.
+- Offline fallback.
+- Confirmation UI.
+
+PHASE 5 — Advanced Voice Assistant
+- Persian speech recognition.
+- Text-to-speech.
+- Conversational commands.
+- Task creation and modification.
+- Voice shortcuts.
+
+PHASE 6 — Productivity Features
+- Daily/weekly/monthly calendar.
+- Conflict detection.
+- Overdue tasks.
+- Personal goals.
+- Habit tracking.
+- AI insights.
+
+PHASE 7 — Quality Assurance
+- Automated tests.
+- Device compatibility.
+- Widget validation.
+- Notification validation.
+- Build verification.
+- Documentation.
+
+Do not skip an earlier critical phase just to add visual features.
+
+---
+
+# 20. FINAL ACCEPTANCE CRITERIA
+
+Nocturne 2.0 is complete only when these conditions are met:
+
+1. The existing project has been upgraded instead of being replaced.
+2. Existing user information is preserved.
+3. Persian voice commands work or provide a clearly explained fallback.
+4. Persian date and time expressions are correctly parsed and validated.
+5. Missing times are not silently invented.
+6. Gemini is genuinely connected when properly configured.
+7. The offline fallback works without pretending to be Gemini.
+8. The assistant can create multiple tasks from one natural-language command.
+9. AI-generated changes require appropriate user confirmation.
+10. Actual Android Home Screen widgets are installed and selectable.
+11. The widgets read real application data.
+12. Widget interactions update the main database.
+13. Notifications are genuine Android notifications.
+14. Reminder scheduling and cancellation work.
+15. Reboot recovery is implemented.
+16. The application does not repeatedly restore sample tasks.
+17. Database migration preserves existing data.
+18. Daily and weekly calendar features work.
+19. Persian RTL and Vazirmatn are retained.
+20. All essential screens and settings are functional.
+21. Automated tests cover important logic.
+22. Build verification is performed where the environment permits.
+23. No essential feature is left as a visual mockup.
+
+---
+
+# 21. FINAL DELIVERY REPORT
+
+After implementation, provide a detailed Persian report containing:
+
+1. Summary of the upgraded application.
+2. All repaired bugs.
+3. All newly implemented features.
+4. New source files.
+5. Modified source files.
+6. Dependencies added or changed.
+7. Android permissions added.
+8. Database migrations.
+9. Firebase setup instructions.
+10. How to add the Nocturne widget to the Android home screen.
+11. How to enable reliable notifications.
+12. How to build the APK in Android Studio.
+13. Test results.
+14. Remaining limitations or blockers.
+
+List anything that could not be implemented or verified honestly.
+
+Do not merely provide recommendations. Complete the actual project modifications.
+
+**FINAL PRODUCT VISION**
+
+Nocturne 2.0 should become a reliable Persian-speaking personal AI time-management assistant.
+
+The user should be able to speak naturally, create a complete schedule, see upcoming activities directly on the Android home screen, receive timely notifications, interact with tasks without opening the application, analyze daily productivity, and manage personal goals.
+
+The final application must feel like a polished, intelligent, reliable Android product — not a demonstration or an unfinished prototype.

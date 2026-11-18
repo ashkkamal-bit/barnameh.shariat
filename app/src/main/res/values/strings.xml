@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">برنامه ریز شریعت</string>
+    <string name="widget_name">برنامه روزانه برنامه ریز شریعت</string>
+    <string name="widget_description">نمایش برنامه امروز، پیشرفت روزانه و دسترسی سریع به دستیار صوتی</string>
+    <string name="nav_today">برنامه امروز</string>
+    <string name="nav_calendar">تقویم</string>
+    <string name="nav_insights">تحلیل</string>
+    <string name="nav_settings">تنظیمات</string>
+    <string name="cd_voice_fab">دستیار صوتی هوشمند</string>
+    <string name="cd_search_tasks">جستجو در برنامه‌ها</string>
+    <string name="cd_clear_search">پاک کردن جستجو</string>
+    <string name="cd_add_task">افزودن کار جدید</string>
+    <string name="cd_close_sheet">بستن پنجره</string>
+    <string name="cd_toggle_complete">تغییر وضعیت انجام کار</string>
+    <string name="cd_prev_month">ماه قبل</string>
+    <string name="cd_next_month">ماه بعد</string>
+    <string name="ai_offline_notice">حالت آفلاین فعال است — پردازش محلی انجام می‌شود. برای هوش مصنوعی ابری Gemini، پیکربندی Firebase لازم است.</string>
+</resources>
